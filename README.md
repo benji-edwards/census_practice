@@ -6,27 +6,22 @@ import codecademylib3
 # Import pandas with alias
 import pandas as pd
 
-# Import dataset as a Pandas Dataframe
-auto = pd.read_csv('autos.csv', index_col=0)
+# Read in the census dataframe
+census = pd.read_csv('census_data.csv', index_col=0)
+#print(census.head())
+#print(census.dtypes)
+census['birth_year'] = census['birth_year'].replace(['missing'], 1967)
+#print(census['birth_year'].unique())
+census['birth_year'] = census['birth_year'].astype(int)
+#print(census.dtypes)
+#print(census['birth_year'].mean())
 
-# Print the first 10 rows of the auto dataset
-print(auto.head(10))
+census['higher_tax'] = pd.Categorical(census['higher_tax'], ['strongly disagree', 'disagree', 'neutral', 'agree', 'strongly agree'], ordered=True)
+#print(census)
 
-# Print the data types of the auto dataframe
-print(auto.dtypes)
+census['higher_tax_code'] = census['higher_tax'].cat.codes
+#print(census['higher_tax_code'].median())
 
-# Change the data type of price to float
-auto['price'] = auto['price'].astype('float')
-print(auto.dtypes)
+census = pd.get_dummies(census, columns=['marital_status'])
+print(census.head())
 
-# Set the engine_size data type to category
-auto['engine_size'] = pd.Categorical(auto['engine_size'], ['small', 'medium', 'large'], ordered=True)
-print(auto['engine_size'].unique())
-
-# Create the engine_codes variable by encoding engine_size
-auto['engine_codes'] = auto['engine_size'].cat.codes
-print(auto.head())
-
-# One-Hot Encode the body-style variable
-auto = pd.get_dummies(auto, columns=['body-style'])
-print(auto.head())
